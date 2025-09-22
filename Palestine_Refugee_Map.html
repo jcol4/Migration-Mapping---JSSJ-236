@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>
+            Palestinian Refugee Flow Map
+        </title>
+        <meta charset="utf-8" />
+
+        <meta name="viewport" content="width=device-width, inital-scale=1.0">
+
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    
+        <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.js"></script>
+        
+        <style>
+            #map { height: 100vh }
+            #controls {
+                position: absolute;
+                top: 120px;
+                left: 10px;
+                z-index: 1000;
+                background: whitesmoke;
+                padding: 10px;
+                border-radius: 5px;
+                box-shadow: 0 0 10px rgba(36, 35, 35, 0.3);
+            }
+            #controls button {
+                margin: 2px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="controls">
+            <button onclick="updateFlows('Pre-1948')">Pre-1948</button>
+            <button onclick="updateFlows('1948')">1948 War</button>
+            <button onclick="updateFlows('1967')">1967 War</button>
+            <button onclick="updateFlows('2025')">2025</button>
+        </div>
+        <div id = "map"></div>
+        <script>
+            const map = L.map('map').setView([35, 35], 4);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+            }).addTo(map);
+            const flowData = {
+                "type": "FeatureCollection",
+                "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "West Bank",
+                        "flows": {
+                            "Pre-1948": 440000,
+                            "1948": 276000,
+                            "1967": 28000,
+                            "2025": 3300000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [35.2330, 31.9000]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Jordan",
+                        "flows": {
+                            "Pre-1948": 10000,
+                            "1948": 350000,
+                            "1967": 15000,
+                            "2025": 2700000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [35.9, 31.95]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Israel",
+                        "flows": {
+                            "Pre-1948": 1200000,
+                            "1948": 750000,
+                            "1967": 200000,
+                            "2025": 2100000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [34.7818, 32.0853]]
+                    }                    
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Gaza Strip",
+                        "flows": {
+                            "Pre-1948": 80000,
+                            "1948": 190000,
+                            "1967": 10000,
+                            "2025": 2100000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [34.47, 31.5]]
+                    }                    
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Lebanon",
+                        "flows": {
+                            "Pre-1948": 5000,
+                            "1948": 100000,
+                            "1967": 5000,
+                            "2025": 450000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [35.8623, 33.8547]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Syria",
+                        "flows": {
+                            "Pre-1948": 5000,
+                            "1948": 56000,
+                            "1967": 10000,
+                            "2025": 430000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [36.5, 33.5]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Egypt",
+                        "flows": {
+                            "Pre-1948": 5000,
+                            "1948": 10000,
+                            "1967": 500,
+                            "2025": 70000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [30.0, 26.0]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Saudi Arabia",
+                        "flows": {
+                            "Pre-1948": 1000,
+                            "1948": 2000,
+                            "1967": 0,
+                            "2025": 327000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [45.0, 25.0]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "United Arab Emirates",
+                        "flows": {
+                            "Pre-1948": 0,
+                            "1948": 1000,
+                            "1967": 0,
+                            "2025": 200000
+                        },
+                        "geometry": {
+                            "type": "LineString", "coordinates": [[34.8516, 31.0461], [54.0, 24.0]]
+                        }
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Qatar",
+                        "flows": {
+                            "Pre-1948": 0,
+                            "1948": 1000,
+                            "1967": 0,
+                            "2025": 100000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [51.5, 25.3]]
+                    }                    
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Kuwait",
+                        "flows": {
+                            "Pre-1948": 0,
+                            "1948": 2000,
+                            "1967": 0,
+                            "2025": 40000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [47.5, 29.3]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Bahrain",
+                        "flows": {
+                            "Pre-1948": 0,
+                            "1948": 500,
+                            "1967": 0,
+                            "2025": 1000
+                        }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [50.55, 26.0]]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "origin": "Palestine",
+                        "destination": "Oman",
+                        "flows": {
+                            "Pre-1948": 0,
+                            "1948": 500,
+                            "1967": 0,
+                            "2025": 1000
+                        }
+                        },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [57.5, 21.0]]
+                    }                    
+                }]
+            }
+
+            function lineWeight(count) {
+                const minWeight = 1;
+                const maxWeight = 10;
+
+                const minLog = Math.log(500 + 1);
+                const maxLog = Math.log(3300000 + 1);
+                const logCount = Math.log(count + 1);
+
+                return 2 * (minWeight + (maxWeight - minWeight) * (logCount - minLog) / (maxLog - minLog));
+            }
+
+            let flowsLayer;
+            let arrowsLayer;
+            let markerLayer;
+            let currentYear = "Pre-1948";
+
+            function updateFlows(year) {
+                currentYear = year;
+                if(flowsLayer) {
+                    map.removeLayer(flowsLayer)
+                }
+                if(arrowsLayer) {
+                    map.removeLayer(arrowsLayer)
+                }
+                if(markerLayer) {
+                    map.removeLayer(markerLayer)
+                }
+
+                flowsLayer = L.geoJSON(flowData, {
+                    style: f => ({
+                        color: '#00702a',
+                        weight: lineWeight(f.properties.flows[year]),
+                        opacity: 0.7
+                    }),
+                    onEachFeature: (feature, layer) => {
+                        const count = feature.properties.flows[year];
+                        layer.bindPopup(`${feature.properties.origin} → ${feature.properties.destination}<br>${count.toLocaleString()} refugees`);
+                    }
+                }).addTo(map);
+
+                arrowsLayer = L.layerGroup();
+                flowData.features.forEach(f => {
+                    const line = L.polyline(f.geometry.coordinates.map(c => [c[1], c[0]]));
+                    const arrow = L.polylineDecorator(line, {
+                        patterns: [
+                            { offset: '50%', repeat: 0, symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: 'red' } }) }
+                        ]
+                    });
+                    arrow.addTo(arrowsLayer);
+                });
+                arrowsLayer.addTo(map);
+
+                markerLayer = L.layerGroup();
+                flowData.features.forEach(f=> {
+                const coords = f.geometry.coordinates[f.geometry.coordinates.length - 1];
+                const latlng = [coords[1], coords[0]];
+
+                const marker = L.circleMarker(latlng, {
+                    radius: 6,
+                    fillColor: '#00702a',
+                    color: '#00702a',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                });
+
+                const popText = `${f.properties.destination}<br>Year: ${year}<br>Population: ${f.properties.flows[year].toLocaleString()}`;
+                marker.bindPopup(popText);
+
+                marker.addTo(markerLayer);
+
+                marker.bindTooltip(`${f.properties.destination} (${year})`, {
+                    permanent: true,
+                    direction: 'top',
+                    offset: [0, -10]
+                });
+            });
+            markerLayer.addTo(map);
+            }
+
+            updateFlows('Pre-1948')
+        </script>
+    </body>
+</html>
