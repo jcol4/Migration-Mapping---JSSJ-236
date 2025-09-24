@@ -6,7 +6,7 @@
         </title>
         <meta charset="utf-8" />
 
-        <meta name="viewport" content="width=device-width, inital-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
@@ -19,7 +19,7 @@
             #controls {
                 position: absolute;
                 top: 120px;
-                left: 10px;
+                left: 30px;
                 z-index: 1000;
                 background: whitesmoke;
                 padding: 10px;
@@ -41,9 +41,11 @@
         <div id = "map"></div>
         <script>
             const map = L.map('map').setView([35, 35], 4);
-
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
+                subdomains: 'abcd',
+                maxZoom: 19
             }).addTo(map);
             const flowData = {
                 "type": "FeatureCollection",
@@ -186,10 +188,10 @@
                             "1948": 1000,
                             "1967": 0,
                             "2025": 200000
-                        },
-                        "geometry": {
-                            "type": "LineString", "coordinates": [[34.8516, 31.0461], [54.0, 24.0]]
                         }
+                    },
+                    "geometry": {
+                        "type": "LineString", "coordinates": [[34.8516, 31.0461], [54.0, 24.0]]
                     }
                 },
                 {
@@ -260,13 +262,27 @@
 
             function lineWeight(count) {
                 const minWeight = 1;
-                const maxWeight = 10;
+                const maxWeight = 5;
 
                 const minLog = Math.log(500 + 1);
                 const maxLog = Math.log(3300000 + 1);
                 const logCount = Math.log(count + 1);
 
                 return 2 * (minWeight + (maxWeight - minWeight) * (logCount - minLog) / (maxLog - minLog));
+            }
+
+            function populationRadius(count) {
+                if(count == 0) {
+                    return 0;
+                }
+                const minRadius = 10000;
+                const maxRadius = 30000;
+                const minCount= 500;
+                const maxCount= 3300000;
+
+                const safeCount = Math.max(count, minCount); 
+                const scaled = Math.sqrt(safeCount - minCount + 1) / Math.sqrt(maxCount - minCount + 1);
+                return minRadius + scaled * (maxRadius - minRadius);
             }
 
             let flowsLayer;
@@ -276,6 +292,7 @@
 
             function updateFlows(year) {
                 currentYear = year;
+                console.log(currentYear)
                 if(flowsLayer) {
                     map.removeLayer(flowsLayer)
                 }
@@ -285,59 +302,56 @@
                 if(markerLayer) {
                     map.removeLayer(markerLayer)
                 }
-
+                console.log("check")
                 flowsLayer = L.geoJSON(flowData, {
+                    filter: f => f.properties.flows[year] > 0,
                     style: f => ({
-                        color: '#00702a',
+                        color: '#EE2A35',
                         weight: lineWeight(f.properties.flows[year]),
                         opacity: 0.7
                     }),
-                    onEachFeature: (feature, layer) => {
-                        const count = feature.properties.flows[year];
-                        layer.bindPopup(`${feature.properties.origin} → ${feature.properties.destination}<br>${count.toLocaleString()} refugees`);
-                    }
                 }).addTo(map);
 
-                arrowsLayer = L.layerGroup();
-                flowData.features.forEach(f => {
-                    const line = L.polyline(f.geometry.coordinates.map(c => [c[1], c[0]]));
-                    const arrow = L.polylineDecorator(line, {
-                        patterns: [
-                            { offset: '50%', repeat: 0, symbol: L.Symbol.arrowHead({ pixelSize: 15, pathOptions: { color: 'red' } }) }
-                        ]
-                    });
-                    arrow.addTo(arrowsLayer);
-                });
-                arrowsLayer.addTo(map);
+                console.log("Flow data sample:", flowData.features[0]);
+
 
                 markerLayer = L.layerGroup();
-                flowData.features.forEach(f=> {
-                const coords = f.geometry.coordinates[f.geometry.coordinates.length - 1];
-                const latlng = [coords[1], coords[0]];
+                flowData.features.forEach(f => {                    
+                    if (!f.geometry || !f.geometry.coordinates || f.geometry.coordinates.length === 0) {
+                        console.warn("Skipping feature with no coordinates:", f);
+                        return;
+                    }                    
+                    const coords = f.geometry.coordinates[f.geometry.coordinates.length - 1];
+                    const latlng = [coords[1], coords[0]];
 
-                const marker = L.circleMarker(latlng, {
-                    radius: 6,
-                    fillColor: '#00702a',
-                    color: '#00702a',
-                    weight: 1,
-                    opacity: 1,
-                    fillOpacity: 0.8
+                    const count = f.properties.flows[currentYear];
+                    if(count == 0) {
+                        return;
+                    }
+                    console.log('Population count for marker:', f.properties.destination, count);
+
+
+                    const marker = L.circle(latlng, {
+                        radius: populationRadius(count),
+                        fillColor: '#009736',
+                        color: '#006400',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    });
+                    console.log(marker.radius)
+                    const popText = `${f.properties.destination}<br>Year: ${currentYear}<br>Population: ${f.properties.flows[currentYear].toLocaleString()}`;
+                    marker.bindPopup(popText);
+
+                    marker.bindTooltip(`${f.properties.destination} (${currentYear})`, {
+                        direction: 'top',
+                        offset: [0, -10]
+                    });
+
+                    marker.addTo(markerLayer).bringToFront();
                 });
-
-                const popText = `${f.properties.destination}<br>Year: ${year}<br>Population: ${f.properties.flows[year].toLocaleString()}`;
-                marker.bindPopup(popText);
-
-                marker.addTo(markerLayer);
-
-                marker.bindTooltip(`${f.properties.destination} (${year})`, {
-                    permanent: true,
-                    direction: 'top',
-                    offset: [0, -10]
-                });
-            });
-            markerLayer.addTo(map);
-            }
-
+                markerLayer.addTo(map);
+                }
             updateFlows('Pre-1948')
         </script>
     </body>
