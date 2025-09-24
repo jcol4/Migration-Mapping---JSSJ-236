@@ -273,10 +273,10 @@
 
             function populationRadius(count) {
                 if(count == 0) {
-                    return 0;
+                    return 20000;
                 }
-                const minRadius = 10000;
-                const maxRadius = 30000;
+                const minRadius = 7500;
+                const maxRadius = 50000;
                 const minCount= 500;
                 const maxCount= 3300000;
 
@@ -302,15 +302,65 @@
                 if(markerLayer) {
                     map.removeLayer(markerLayer)
                 }
-                console.log("check")
+
                 flowsLayer = L.geoJSON(flowData, {
-                    filter: f => f.properties.flows[year] > 0,
-                    style: f => ({
+                    style: f => {
+                        const count = f.properties.flows[currentYear];
+                        if(count === 0) {
+                            return {
+                                color: '#F5F5F5',
+                                weight: lineWeight(f.properties.flows[currentYear]),
+                                opacity: 0.7 
+                            }
+                        }
+                        return {                        
                         color: '#EE2A35',
-                        weight: lineWeight(f.properties.flows[year]),
+                        weight: lineWeight(f.properties.flows[currentYear]),
                         opacity: 0.7
-                    }),
+                    }
+                    },
                 }).addTo(map);
+                /*flowData.features.forEach(f => {
+                    if(!f.geometry || !f.geometry.coordinates) {
+                        return;
+
+                    }
+                    const count = f.properties.flows[currentYear];
+                    if(count == 0) {
+                        return;
+                    }
+                    const coords = f.geometry.coordinates.map(c => [c[1], c[0]])
+                    const baseLine = L.polyline(coords, {opacity: 0}).addTo(map);
+                    let arrowOffset = 0;
+                    function animateArrows(baseLine) {
+                        arrowOffset = (arrowOffset + 0.05) % 100;
+
+                        if(baseLine.arrowDecorator) {
+                            map.removeLayer(baseLine.arrowDecorator)
+                        }
+
+                        baseLine.arrowDecorator = L.polylineDecorator(
+                            baseLine, {
+                                patterns: [
+                                {
+                                    offset: arrowOffset + '%',
+                                    repeat: '5%',
+                                    symbol: L.Symbol.arrowHead({
+                                        pixelSize: 8,
+                                        polygon: true,
+                                        pathOptions: {
+                                            color: '#EE2A35',
+                                            fillOpacity: 1,
+                                            weight: 1
+                                        }
+                                    })
+                                }
+                            ]                        
+                        }).addTo(map);
+                        requestAnimationFrame(() => animateArrows(baseLine));
+                    }
+                    animateArrows(baseLine);                    
+                })*/
 
                 console.log("Flow data sample:", flowData.features[0]);
 
@@ -325,9 +375,6 @@
                     const latlng = [coords[1], coords[0]];
 
                     const count = f.properties.flows[currentYear];
-                    if(count == 0) {
-                        return;
-                    }
                     console.log('Population count for marker:', f.properties.destination, count);
 
 
@@ -339,6 +386,13 @@
                         opacity: 1,
                         fillOpacity: 0.8
                     });
+
+                    if(count === 0) {
+                        marker.setStyle({
+                            fillColor: '#F5F5F5',
+                            color: '#F5F5F5'
+                        });
+                    }
                     console.log(marker.radius)
                     const popText = `${f.properties.destination}<br>Year: ${currentYear}<br>Population: ${f.properties.flows[currentYear].toLocaleString()}`;
                     marker.bindPopup(popText);
