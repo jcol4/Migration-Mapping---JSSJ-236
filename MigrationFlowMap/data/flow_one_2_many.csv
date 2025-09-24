@@ -1,0 +1,52 @@
+id,origin_id,timeframe,type,origin,o_lat,o_lon,dest_id,dest,d_lat,d_lon,pop
+1,ISR,pre_1948,static,Israel,31.0461,34.8516,,,,,1200000
+2,WBNK,pre_1948,static,West Bank,31.9466,35.3027,,,,,440000
+3,GAZA,pre_1948,static,Gaza Strip,31.3547,34.3088,,,,,80000
+4,JOR,pre_1948,static,Jordan,30.5852,36.2384,,,,,10000
+5,LBN,pre_1948,static,Lebanon,33.8547,35.8623,,,,,5000
+6,SYR,pre_1948,static,Syria,34.8021,38.9968,,,,,5000
+7,EGY,pre_1948,static,Egpyt,26.8206,30.8025,,,,,5000
+8,SAU,pre_1948,static,Saudi Arabia,23.8859,45.0792,,,,,1000
+9,UAE,pre_1948,static,United Arab Emirates,23.4241,53.8478,,,,,0
+10,QAT,pre_1948,static,Qatar,25.3548,51.1839,,,,,0
+11,KUW,pre_1948,static,Kuwait,29.3117,47.4818,,,,,0
+12,BHR,pre_1948,static,Bahrain,26.0667,50.5577,,,,,0
+13,OMN,pre_1948,static,Oman,21.4735,55.9754,,,,,0
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,WBNK,West Bank,31.9466,35.3027,276000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,GAZA,Gaza Strip,31.3547,34.3088,190000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,JOR,Jordan,30.5852,36.2384,350000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,LBN,Lebanon,33.8547,35.8623,100000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,SYR,Syria,34.8021,38.9968,56000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,EGY,Egpyt,26.8206,30.8025,10000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,SAU,Saudi Arabia,23.8859,45.0792,2000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,UAE,United Arab Emirates,23.4241,53.8478,1000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,QAT,Qatar,25.3548,51.1839,1000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,KUW,Kuwait,29.3117,47.4818,2000
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,BHR,Bahrain,26.0667,50.5577,500
+1,ISR,1948_war,flow,Israel,31.0461,34.8516,OMN,Oman,21.4735,55.9754,500
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,WBNK,West Bank,31.9466,35.3027,28000
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,GAZA,Gaza Strip,31.3547,34.3088,10000
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,JOR,Jordan,30.5852,36.2384,15000
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,LBN,Lebanon,33.8547,35.8623,5000
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,SYR,Syria,34.8021,38.9968,10000
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,EGY,Egpyt,26.8206,30.8025,500
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,SAU,Saudi Arabia,23.8859,45.0792,0
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,UAE,United Arab Emirates,23.4241,53.8478,0
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,QAT,Qatar,25.3548,51.1839,0
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,KUW,Kuwait,29.3117,47.4818,0
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,BHR,Bahrain,26.0667,50.5577,0
+1,ISR,1967_war,flow,Israel,31.0461,34.8516,OMN,Oman,21.4735,55.9754,0
+1,ISR,2025,static,Israel,31.0461,34.8516,,,,,2100000
+2,WBNK,2025,static,West Bank,31.9466,35.3027,,,,,3300000
+3,GAZA,2025,static,Gaza Strip,31.3547,34.3088,,,,,2100000
+4,JOR,2025,static,Jordan,30.5852,36.2384,,,,,2700000
+5,LBN,2025,static,Lebanon,33.8547,35.8623,,,,,450000
+6,SYR,2025,static,Syria,34.8021,38.9968,,,,,430000
+7,EGY,2025,static,Egpyt,26.8206,30.8025,,,,,70000
+8,SAU,2025,static,Saudi Arabia,23.8859,45.0792,,,,,327000
+9,UAE,2025,static,United Arab Emirates,23.4241,53.8478,,,,,200000
+10,QAT,2025,static,Qatar,25.3548,51.1839,,,,,100000
+11,KUW,2025,static,Kuwait,29.3117,47.4818,,,,,40000
+12,BHR,2025,static,Bahrain,26.0667,50.5577,,,,,1000
+13,OMN,2025,static,Oman,21.4735,55.9754,,,,,1000
+
