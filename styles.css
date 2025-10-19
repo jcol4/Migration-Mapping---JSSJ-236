@@ -1,0 +1,105 @@
+
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: "Poppins", sans-serif;
+    color: #f9f9f9;
+}
+
+/*Navbar Style*/
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(0, 0, 0, 0.6);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    backdrop-filter: blur(6px);
+    box-sizing: border-box;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #00bfff;
+    letter-spacing: 1px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s, border-bottom 0.3s;
+    padding-bottom: 5px;
+}
+
+.nav-links a:hover {
+    color: #00bfff;
+    border-bottom: 2px solid #00bfff;
+}
+
+.nav-links .active {
+    color: #00bfff;
+}
+
+.landing {
+    height: 100vh;
+    width: 100%;
+    background: url('landing_bg.jpg') center/cover no-repeat;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.landing-content {
+    position: relative;
+    text-align: center;
+    color: #fff;
+    z-index: 1;
+
+}
+
+.landing-content h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.landing-content p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.btn {
+    padding: 0.8rem 1.8rem;
+    background: #00bfff;
+    color: white;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.3s, transform 0.3s;
+}
+
+.btn:hover {
+    background: #0099cc;
+    transform: translateY(-3px);
+}
