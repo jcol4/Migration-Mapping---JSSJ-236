@@ -1,0 +1,16 @@
+id,name,lat,lon,highlight
+,,,,1
+"","","","",1
+BHR,Bahrain,26.0667,50.5577,1
+EGY,Egpyt,26.8206,30.8025,1
+GAZA,"Gaza Strip",31.3547,34.3088,1
+ISR,Israel,31.0461,34.8516,1
+JOR,Jordan,30.5852,36.2384,1
+KUW,Kuwait,29.3117,47.4818,1
+LBN,Lebanon,33.8547,35.8623,1
+OMN,Oman,21.4735,55.9754,1
+QAT,Qatar,25.3548,51.1839,1
+SAU,"Saudi Arabia",23.8859,45.0792,1
+SYR,Syria,34.8021,38.9968,1
+UAE,"United Arab Emirates",23.4241,53.8478,1
+WBNK,"West Bank",31.9466,35.3027,1
