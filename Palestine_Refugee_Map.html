@@ -1,50 +1,90 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
     <head>
-        <title>
-            Palestinian Refugee Flow Map
-        </title>
-        <meta charset="utf-8" />
+    <title>Palestinian Refugee Flow Map</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.js"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
 
-        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    
-        <script src=""></script>
-
-        <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.js"></script>
-        
-        <style>
-            #map { height: 100vh }
-            #controls {
-                position: absolute;
-                top: 120px;
-                left: 30px;
-                z-index: 1000;
-                background: whitesmoke;
-                padding: 10px;
-                border-radius: 5px;
-                box-shadow: 0 0 10px rgba(36, 35, 35, 0.3);
-            }
-            #yearSlider { width: 200px;}
-        </style>
+    <style>
+        body { margin: 0; padding: 0; font-family: sans-serif; }
+        #map { height: 100vh; width: 100%; }
+        #controls {
+            position: absolute;
+            top: 120px;
+            left: 30px;
+            z-index: 1000;
+            background: whitesmoke;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(36, 35, 35, 0.3);
+        }
+        #yearSlider { width: 200px; }
+        nav.navbar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            z-index: 2000;
+        }
+        nav.navbar .logo {
+            margin: 0;
+            font-size: 20px;
+        }
+        nav.navbar .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+        nav.navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+        }
+        nav.navbar .nav-links a.active {
+            text-decoration: underline;
+        }
+    </style>
     </head>
+
     <body>
-        <div id="controls">
-            <label for="yearSlider">Year: <span id="yearLabel">Pre-1948</span></label><br>
-            <input type="range" id="yearSlider" min="0" max="3" step="0.01" value="0">
-        </div>
-        <div id = "map"></div>
-        <script>
-            const map = L.map('map').setView([35, 35], 4);
-            
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/">CARTO</a>',
-                subdomains: 'abcd',
-                maxZoom: 19
-            }).addTo(map);
+    <nav class="navbar">
+        <h1 class="logo">Flow Map</h1>
+        <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Palestine_Refugee_Map.html" class="active">Flow Map</a></li>
+        <li><a href="sources.html">Sources</a></li>
+        <li><a href="background.html">Background</a></li>
+        </ul>
+    </nav>
+
+    <div id="controls">
+        <label for="yearSlider">Year: <span id="yearLabel">Pre-1948</span></label><br>
+        <input type="range" id="yearSlider" min="0" max="3" step="0.01" value="0">
+    </div>
+
+    <div id="map"></div>
+
+    <script>
+        const map = L.map('map').setView([35, 35], 4);
+
+        // Base map
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap & CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+        }).addTo(map);
             const flowData = {
                 "type": "FeatureCollection",
                 "features": [
@@ -256,6 +296,56 @@
                         "type": "LineString", "coordinates": [[34.8516, 31.0461], [57.5, 21.0]]
                     }                    
                 }]
+            }
+
+            Papa.parse('countries.csv', {
+            download: true,
+            header: true,
+            complete: function(results) {
+                const highlightCountries = {};
+                results.data.forEach(row => {
+                if (row.country && row.color) {
+                    highlightCountries[row.country.trim()] = row.color.trim();
+                }
+                });
+                addCountryLayer(highlightCountries);
+                }
+            });
+
+            function addCountryLayer(highlightCountries) {
+            fetch('https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json')
+                .then(res => res.json())
+                .then(data => {
+                L.geoJSON(data, {
+                    style: feature => {
+                    const name = feature.properties.name;
+                    const color = highlightCountries[name] || 'transparent';
+                    return {
+                        color: '#888',
+                        weight: 1,
+                        fillColor: color,
+                        fillOpacity: color === 'transparent' ? 0 : 0.6
+                    };
+                    }
+                }).addTo(map);
+                return fetch('https://github.com/bothness/gaza-geojson/blob/main/boundaries/gaza-state-boundaries.geojson');
+                })
+                .then(res => res.json())
+                .then(gazaData => {
+                L.geoJSON(gazaData, {
+                    style: feature => {
+                    const name = feature.properties.name || 'Gaza Strip';
+                    const color = highlightCountries[name] || highlightCountries["Gaza Strip"] || '#ff9900';
+                    return {
+                        color: '#444',
+                        weight: 2,
+                        fillColor: color,
+                        fillOpacity: 0.7
+                    };
+                    }
+                }).addTo(map);
+                })
+                .catch(err => console.error('Error loading boundaries:', err));
             }
 
             let flowsLayer;
