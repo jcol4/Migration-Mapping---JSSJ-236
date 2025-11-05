@@ -71,7 +71,7 @@
         const map = L.map('map', { zoomControl: false }).setView([35, 35], 4);
 
         // Base map
-        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
             attribution: '&copy; OpenStreetMap & CARTO',
             subdomains: 'abcd',
             maxZoom: 19
@@ -112,7 +112,7 @@
                 .catch(err => console.error('Error loading world geojson:', err));
         }
 
-        // full flowData (kept from your original)
+        // flowData 
         const flowData = {
             "type": "FeatureCollection",
             "features": [
@@ -277,21 +277,64 @@
 
         let flowsLayer, markerLayer;
 
+        let decorators = [];
+
         function updateFlows(sliderValue) {
             const yearLabel = yearMap[Math.round(sliderValue)];
             if (flowsLayer) map.removeLayer(flowsLayer);
             if (markerLayer) map.removeLayer(markerLayer);
 
-            flowsLayer = L.geoJSON(flowData, {
-                style: f => {
-                    const interpolatedCount = interpolateSliderVal(sliderValue, f.properties.flows);
-                    const destinationMax = f.properties.flows[yearLabel] || 0;
-                    const interpolatedColor = destinationMax === 0 ? '#F5F5F5' : interpolateColor(interpolatedCount, destinationMax, "#EE2A35");
-                    return { color: interpolatedColor, weight: lineWeight(interpolatedCount), opacity: 0.7 };
+            decorators = [];
+
+            flowsLayer = L.layerGroup();
+            
+            // Draw flow lines
+            flowData.features.forEach(f => {
+                const interpolatedCount = interpolateSliderVal(sliderValue, f.properties.flows);
+                const destinationMax = f.properties.flows[yearLabel] || 0;
+                const hasFlow = destinationMax > 0;
+
+                const interpolatedColor = destinationMax === 0 ? '#F5F5F5' : interpolateColor(interpolatedCount, destinationMax, "#EE2A35");
+
+                
+                const polyline = L.polyline(
+                    f.geometry.coordinates.map(c => [c[1], c[0]]),
+                    { color: interpolatedColor, weight: lineWeight(interpolatedCount), opacity: 0.8 }
+                ).addTo(flowsLayer);
+
+                if (yearLabel === "Pre-1948" || yearLabel === "2025") {
+                    polyline.setStyle({ dashArray: '10,10', opacity: 0.8 });
+                    return;
                 }
-            }).addTo(map);
+
+                if (!hasFlow) {
+                    polyline.setStyle({ dashArray: null, opacity: 0.8 });
+                    return;
+                } 
+
+
+                const decorator = L.polylineDecorator(polyline, {
+                    patterns: [
+                        {
+                            offset: 0,
+                            repeat: 50,
+                            symbol: L.Symbol.arrowHead({
+                                pixelSize: 8,
+                                polygon: true,
+                                pathOptions: { fillOpacity: 0.9, color: interpolatedColor }
+                            })
+                        }
+                    ]
+                }).addTo(flowsLayer);
+
+                decorators.push(decorator);
+            });
+
+            flowsLayer.addTo(map);
 
             markerLayer = L.layerGroup();
+
+            // Draw destination markers
             flowData.features.forEach(f => {
                 if (!f.geometry?.coordinates?.length) return;
                 const coords = f.geometry.coordinates.at(-1);
@@ -314,6 +357,26 @@
                 marker.addTo(markerLayer);
             });
             markerLayer.addTo(map);
+        
+        }
+
+        let animationOffset = 0;
+
+        // Animate arrows
+        function animateArrows() {
+            animationOffset = (animationOffset + 1) % 50;
+            
+            if (decorators && decorators.length > 0) {
+                 decorators.forEach(decorator => {
+                    const patterns = decorator.options.patterns.map(p => ({
+                        ...p,
+                        offset: animationOffset
+                    }));
+                    decorator.setPatterns(patterns);
+                });
+            }
+           
+            requestAnimationFrame(animateArrows);
         }
 
         const yearSlider = document.getElementById('yearSlider');
@@ -326,6 +389,8 @@
         });
 
         updateFlows(parseFloat(yearSlider.value));
+        animateArrows();
+        
     </script>
 </body>
 </html>
