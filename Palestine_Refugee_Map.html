@@ -9,6 +9,8 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet-polylinedecorator/dist/leaflet.polylineDecorator.js"></script>
     <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.css" />
+    <script src="https://unpkg.com/leaflet-minimap/dist/Control.MiniMap.min.js"></script>
 
     <link rel="stylesheet" href="styles.css">
 
@@ -26,9 +28,18 @@
         </ul>
     </nav>
 
-    <div id="controls">
-        <label for="yearSlider">Year: <span id="yearLabel">Pre-1948</span></label><br>
-        <input type="range" id="yearSlider" min="0" max="3" step="0.01" value="0">
+    <div class="year-controls">
+        <input id="yearSlider" type="range" min="0" max="10" value="0" step="1">
+        <div id="yearLabel"></div>
+
+        <!-- New time-period menu -->
+        <select id="yearPreset">
+            <option value="">Select Time Period</option>
+            <option value="pre1948">Pre-1948</option>
+            <option value="1948">1948</option>
+            <option value="1967">1967</option>
+            <option value="2025">2025</option>
+        </select>
     </div>
 
     <div id="map"></div>

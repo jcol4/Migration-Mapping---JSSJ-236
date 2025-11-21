@@ -1,26 +1,76 @@
-export function bezierCurveCoords(start, end, curvature = .3, numpoints = 50) {
-    const lat1 = start[0], lon1 = start[1];
-    const lat2 = end[0], lon2 = end[1];
+// js/curves.js
 
-    const latMid = (lat1 + lat2) / 2;
-    const lonMid = (lon1 + lon2) / 2;
+// js/curves.js
 
-    const dx = lon2 - lon1;
-    const dy = lat2 - lat1;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const normX = -dy / dist;
-    const normY = -dx / dist;
+export function bezierCurveCoords(start, end, curvature = 0.25, numpoints = 40) {
+    // convert to simple XY with x=lon, y=lat for arithmetic
+    const p0 = { x: start[0], y: start[1] };
+    const p2 = { x: end[0], y: end[1] };
 
-    const controlLat = latMid + curvature * dist * normY;
-    const controlLon = lonMid + curvature * dist * normX;
+    // midpoint
+    const mx = (p0.x + p2.x) / 2;
+    const my = (p0.y + p2.y) / 2;
 
-    const coords = [];
-    for (let t = 0; t <= 1; t += 1 / numpoints) {
-        const lat = (1 - t) * (1 - t) * lat1 + 2 * (1 - t) * t * controlLat + t * t * lat2;
-        const lon = (1 - t) * (1 - t) * lon1 + 2 * (1 - t) * t * controlLon + t * t * lon2;
-        coords.push([lat, lon]);
+    // vector from start to end
+    const vx = p2.x - p0.x;
+    const vy = p2.y - p0.y;
+
+
+    // perpendicular (normalized) for control point direction
+    let px = -vy;
+    let py = vx;
+    const plen = Math.hypot(px, py) || 1;
+    px /= plen; py /= plen;
+
+    // distance between start and end (approx in degrees)
+    const dist = Math.hypot(vx, vy);
+
+    // magnitude of displacement for control point
+    const mag = dist * curvature;
+
+    // control point (quadratic bezier has single control point)
+    const cx = mx + px * mag;
+    const cy = my + py * mag;
+
+    // sample
+    const pts = [];
+    for (let i = 0; i <= Math.max(2, numpoints); i++) {
+        const t = i / numpoints;
+        const oneMinusT = 1 - t;
+        // Quadratic Bezier: B(t) = (1-t)^2 P0 + 2(1-t)t C + t^2 P2
+        const x = oneMinusT * oneMinusT * p0.x + 2 * oneMinusT * t * cx + t * t * p2.x;
+        const y = oneMinusT * oneMinusT * p0.y + 2 * oneMinusT * t * cy + t * t * p2.y;
+        // convert to Leaflet lat-lng [lat, lon]
+        pts.push([y, x]);
     }
-    return coords
+    return pts;
+}
+
+export function bezierPointAndTangent(start, end, curvature = 0.25, t = 0.5) {
+    const p0 = { x: start[0], y: start[1] };
+    const p2 = { x: end[0], y: end[1] };
+
+    const mx = (p0.x + p2.x) / 2;
+    const my = (p0.y + p2.y) / 2;
+    const vx = p2.x - p0.x;
+    const vy = p2.y - p0.y;
+    let px = -vy;
+    let py = vx;
+    const plen = Math.hypot(px, py) || 1;
+    px /= plen; py /= plen;
+    const dist = Math.hypot(vx, vy);
+    const mag = dist * curvature;
+    const c = { x: mx + px * mag, y: my + py * mag };
+
+    const oneMinusT = 1 - t;
+    const x = oneMinusT * oneMinusT * p0.x + 2 * oneMinusT * t * c.x + t * t * p2.x;
+    const y = oneMinusT * oneMinusT * p0.y + 2 * oneMinusT * t * c.y + t * t * p2.y;
+
+    // derivative: B'(t) = 2(1-t)(C - P0) + 2t(P2 - C)
+    const dx = 2 * oneMinusT * (c.x - p0.x) + 2 * t * (p2.x - c.x);
+    const dy = 2 * oneMinusT * (c.y - p0.y) + 2 * t * (p2.y - c.y);
+
+    return { lat: y, lng: x, dx, dy };
 }
 
 export function smoothstep(x) { return x * x * (3 - 2 * x); }
@@ -30,18 +80,11 @@ export function lineWeight(count) {
     const minLog = Math.log(500 + 1);
     const maxLog = Math.log(3300000 + 1);
     const logCount = Math.log(count + 1);
-    return 2 * (minWeight + (maxWeight - minWeight) * (logCount - minLog) / (maxLog - minLog));
+    return minWeight + (maxWeight - minWeight) * (logCount - minLog) / (maxLog - minLog);
 }
 
-export function populationRadius(count) {
-    const minRadius = 2500, maxRadius = 50000;
-    const minCount = 500, maxCount = 3300000;
-    const safeCount = Math.max(count, minCount);
-    const scaled = Math.sqrt(safeCount - minCount + 1) / Math.sqrt(maxCount - minCount + 1);
-    return minRadius + scaled * (maxRadius - minRadius);
-}
-
-export function interpolateSliderVal(sliderValue, flows) {
+// --- Modified interpolateSliderVal to accept yearMap ---
+export function interpolateSliderVal(sliderValue, flows, yearMap) {
     const idx = Math.floor(sliderValue);
     const nextIdx = Math.min(idx + 1, yearMap.length - 1);
     const t = smoothstep(sliderValue - idx);
@@ -50,12 +93,4 @@ export function interpolateSliderVal(sliderValue, flows) {
     const startVal = flows[startYear] || 0;
     const endVal = flows[endYear] || 0;
     return startVal + t * (endVal - startVal);
-}
-
-export function interpolateColor(count, maxCount, color) {
-    const ratio = smoothstep(Math.min(count / maxCount, 1));
-    const r = Math.round(245 + (parseInt(color.slice(1,3),16)-245)*ratio);
-    const g = Math.round(245 + (parseInt(color.slice(3,5),16)-245)*ratio);
-    const b = Math.round(245 + (parseInt(color.slice(5,7),16)-245)*ratio);
-    return `rgb(${r},${g},${b})`;
 }
