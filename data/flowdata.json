@@ -1,0 +1,343 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "West Bank",
+                "flows": {
+                    "Pre-1948": 440000,
+                    "1948": 276000,
+                    "1967": 28000,
+                    "2025": 3300000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        35.233,
+                        31.9
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Jordan",
+                "flows": {
+                    "Pre-1948": 10000,
+                    "1948": 350000,
+                    "1967": 15000,
+                    "2025": 2700000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        35.9,
+                        31.95
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Israel",
+                "flows": {
+                    "Pre-1948": 1200000,
+                    "1948": 750000,
+                    "1967": 200000,
+                    "2025": 2100000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        34.7818,
+                        32.0853
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Gaza Strip",
+                "flows": {
+                    "Pre-1948": 80000,
+                    "1948": 190000,
+                    "1967": 10000,
+                    "2025": 2100000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        34.47,
+                        31.5
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Lebanon",
+                "flows": {
+                    "Pre-1948": 5000,
+                    "1948": 100000,
+                    "1967": 5000,
+                    "2025": 450000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        35.8623,
+                        33.8547
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Syria",
+                "flows": {
+                    "Pre-1948": 5000,
+                    "1948": 56000,
+                    "1967": 10000,
+                    "2025": 430000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        36.5,
+                        33.5
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Egypt",
+                "flows": {
+                    "Pre-1948": 5000,
+                    "1948": 10000,
+                    "1967": 500,
+                    "2025": 70000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        30.0,
+                        26.0
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Saudi Arabia",
+                "flows": {
+                    "Pre-1948": 1000,
+                    "1948": 2000,
+                    "1967": 0,
+                    "2025": 327000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        45.0,
+                        25.0
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "United Arab Emirates",
+                "flows": {
+                    "Pre-1948": 0,
+                    "1948": 1000,
+                    "1967": 0,
+                    "2025": 200000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        54.0,
+                        24.0
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Qatar",
+                "flows": {
+                    "Pre-1948": 0,
+                    "1948": 1000,
+                    "1967": 0,
+                    "2025": 100000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        51.5,
+                        25.3
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Kuwait",
+                "flows": {
+                    "Pre-1948": 0,
+                    "1948": 2000,
+                    "1967": 0,
+                    "2025": 40000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        47.5,
+                        29.3
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Bahrain",
+                "flows": {
+                    "Pre-1948": 0,
+                    "1948": 500,
+                    "1967": 0,
+                    "2025": 1000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        50.55,
+                        26.0
+                    ]
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "origin": "Palestine",
+                "destination": "Oman",
+                "flows": {
+                    "Pre-1948": 0,
+                    "1948": 500,
+                    "1967": 0,
+                    "2025": 1000
+                }
+            },
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                    [
+                        34.8516,
+                        31.0461
+                    ],
+                    [
+                        57.5,
+                        21.0
+                    ]
+                ]
+            }
+        }
+    ]
+}
