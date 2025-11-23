@@ -7,6 +7,11 @@ html, body {
     background-color: #111; /* from previous inline style */
 }
 
+.glow-country {
+    filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8));
+}
+
+
 .year-controls {
     position: fixed;   /* so it sits on top of the map */
     top: 120px;        /* moves it below your navbar */
