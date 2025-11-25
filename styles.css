@@ -11,6 +11,10 @@ html, body {
     filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.8));
 }
 
+.leaflet-glow {
+    filter: drop-shadow(0 0 10px #ff3b30) drop-shadow(0 0 20px #ff3b30);
+}
+
 
 .year-controls {
     position: fixed;   /* so it sits on top of the map */

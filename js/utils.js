@@ -27,16 +27,16 @@ export function computeRefugeeTotals(data) {
 }
 
 export function getGlowStyle(total, color) {
-    const weight = Math.min(2 + total / 500000, 20);        // stroke weight proportional
-    const fillOpacity = Math.min(0.1 + total / 5000000, 0.65); // fill opacity proportional
-
+    const weight = Math.min(4 + total / 200000, 30);       // stronger stroke
+    const fillOpacity = Math.min(0.3 + total / 2000000, 0.9); // more opaque
     return {
-        color: color || "#fff",                    // border color
+        color: color || "#fff",
         weight: weight,
-        fillColor: color || "#fff",               // fill uses same color
+        fillColor: color || "#fff",
         fillOpacity: fillOpacity
     };
 }
+
 
 let glowLayer = null;
 
@@ -58,30 +58,18 @@ export function addCountryGlowLayer(map, combinedGeo, highlightCountries, slider
 
     // Create new glow layer
     glowLayer = L.geoJSON(combinedGeo, {
-        style: feature => {
-            const name = feature.properties.ADMIN || feature.properties.name;
-            const color = highlightCountries[name];
-            if (!color) return { weight: 0, fillOpacity: 0 };
-
-            // Determine population for this country
-            const pop = populationTotals[name] || 0;
-
-            // Stroke width and fill opacity proportional to population
-            const weight = Math.min(3 + pop / 500000, 25);
-            const fillOpacity = Math.min(0.1 + pop / 5000000, 0.6);
-
-            return {
-                color,       // border color same as CSV
-                weight,
-                fillColor: color,
-                fillOpacity,
-                className: 'glow-country' // optional: CSS glow effect
-            };
-        }
+        style: feature => getGlowStyle(
+            populationTotals[feature.properties.ADMIN || feature.properties.name] || 0,
+            highlightCountries[feature.properties.ADMIN || feature.properties.name]
+        ),
+        className: 'leaflet-glow'
     }).addTo(map);
+
+
 
     glowLayer.bringToFront();
 }
+
 
 
 // utils.js

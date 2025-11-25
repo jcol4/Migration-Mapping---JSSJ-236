@@ -29,38 +29,51 @@ export function addCountryLayer(map, highlightCountries) {
             features: [...worldGeo.features, ...customGeo.features]
         };
 
+        // Precompute static populations for cumulative glow
         const pre1948Totals = computeStaticPopulations(flowData, "Pre-1948");
         const futureTotals = computeStaticPopulations(flowData, "2025");
 
         const yearMap = { 0: "Pre-1948", 1: "1948", 2: "1967", 3: "2025" };
         const sliderElem = document.getElementById("yearSlider");
         sliderElem.max = Object.keys(yearMap).length - 1;
-
-        // Initial slider setup
         sliderElem.value = 0;
+
+        // Slider event: update glow and flows
         sliderElem.addEventListener("input", () => {
             const sliderValue = parseInt(sliderElem.value);
             const yearKey = yearMap[sliderValue];
 
+            // Compute cumulative totals
+            let populationTotals = {};
             if (yearKey === "Pre-1948") {
-                addCountryGlowLayer(map, combinedGeo, highlightCountries, sliderValue, yearMap, pre1948Totals);
-                updateFlows(map, sliderValue, flowData, yearMap, highlightCountries); // no arrows yet
+                populationTotals = pre1948Totals;
+            } else if (yearKey === "1948") {
+                const totals1948 = computeStaticPopulations(flowData, "1948");
+                populationTotals = { ...pre1948Totals };
+                for (let c in totals1948) populationTotals[c] = (populationTotals[c] || 0) + totals1948[c];
+            } else if (yearKey === "1967") {
+                const totals1948 = computeStaticPopulations(flowData, "1948");
+                const totals1967 = computeStaticPopulations(flowData, "1967");
+                populationTotals = { ...pre1948Totals };
+                for (let c in totals1948) populationTotals[c] = (populationTotals[c] || 0) + totals1948[c];
+                for (let c in totals1967) populationTotals[c] = (populationTotals[c] || 0) + totals1967[c];
             } else if (yearKey === "2025") {
-                addCountryGlowLayer(map, combinedGeo, highlightCountries, sliderValue, yearMap, futureTotals);
-                updateFlows(map, sliderValue, flowData, yearMap, highlightCountries); // optional arrows
-            } else if (yearKey === "1948" || yearKey === "1967") {
-                addCountryGlowLayer(map, combinedGeo, highlightCountries, sliderValue, yearMap, {}); // empty glow or optional
-                updateFlows(map, sliderValue, flowData, yearMap, highlightCountries);
+                populationTotals = futureTotals;
             }
 
-            // Optional: update year label
+            // Update glow and flows
+            addCountryGlowLayer(map, combinedGeo, highlightCountries, sliderValue, yearMap, populationTotals);
+            updateFlows(map, sliderValue, flowData, yearMap, highlightCountries);
+
+            // Update year label
             const yearLabel = document.getElementById("yearLabel");
             if (yearLabel) yearLabel.textContent = yearKey;
         });
 
+        // Trigger initial render
         sliderElem.dispatchEvent(new Event("input"));
 
-        // --- Base map style & labels ---
+        // Base map style & interactivity
         const style = feature => {
             const name = feature.properties.ADMIN || feature.properties.name;
             const color = highlightCountries[name];
@@ -76,10 +89,14 @@ export function addCountryLayer(map, highlightCountries) {
             onEachFeature: (feature, layer) => {
                 const name = feature.properties.ADMIN || feature.properties.name;
 
+                // Hover effect
                 layer.on('mouseover', () => layer.setStyle({ weight: 3 }));
                 layer.on('mouseout', () => layer.setStyle({ weight: highlightCountries[name] ? 2 : 0.5 }));
+
+                // Click zoom to country
                 layer.on('click', () => map.fitBounds(layer.getBounds(), { padding: [40, 40] }));
 
+                // Add labels for highlighted countries
                 if (highlightCountries[name]) {
                     const center = layer.getBounds().getCenter();
                     L.marker(center, {
